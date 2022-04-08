@@ -76,9 +76,10 @@ def Inci2Epi_Para(outbreakData):
     
     return [map_estimate["k_disp"],k_hpd,map_estimate["Rt"],R_hpd];
 
+# the mean and standard deviation of the generation time or serial interval 
 mean_GT = 12.6;
 sd_GT   = 2.8;
-MaxInfctPrd = int(mean_GT+3*sd_GT)+1
-IncData = np.arange(1,100)
+MaxInfctPrd = int(mean_GT+3*sd_GT)+1 # the truncation time of generation time or serial interval
+IncData = np.arange(1,100) # the input incidence time series 
 obkData = [IncData,mean_GT,sd_GT,MaxInfctPrd]
-re = Inci2Epi_Para(obkData)
+re = Inci2Epi_Para(obkData) # return the MAP and the HPD of the dispersion parameter (k) and the reproduction number (R)
