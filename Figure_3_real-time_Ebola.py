@@ -105,7 +105,7 @@ MaxInfctPrd = int(mean_GT+3*sd_GT)+1; # maximum length of infectious period in w
 '''
 2. Simulate the incidence data IncData
 '''
-dataPath = '/Users/macbjmu/Documents/research/NewIdeas/dynamic_Rt/dynaRt_code/data/'
+dataPath = '/Users/data/'
 dataFile = 'ebola_FT.csv'
 Wratios = gamma2discrete(mean_GT,sd_GT,MaxInfctPrd)
 IncData = pd.read_csv(dataPath+dataFile)['IncData'].values
