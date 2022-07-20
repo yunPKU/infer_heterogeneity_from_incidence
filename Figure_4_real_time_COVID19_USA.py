@@ -8,7 +8,6 @@ Created on Tue Jul  6 16:04:04 2021
 """
 import numpy as np
 from scipy.stats import nbinom
-from scipy.optimize import fsolve
 from scipy import special
 import scipy.integrate as integrate
 from scipy.stats import gamma
@@ -46,21 +45,6 @@ def gamma2discrete(mean_GT,sd_GT,MaxInfctPrd):
         wRatio[tmps] = gamma.cdf(tmps+0.5,shape_para,scale = 1/rate_para) - gamma.cdf(tmps-0.5,shape_para,scale = 1/rate_para)
     
     return wRatio/np.sum(wRatio);
-
-def FOI_cal(IncData,Wratio):
-    tmpFOI = 0
-    IncData = np.flip(IncData);
-    for i in range(np.min([len(Wratio)-1,len(IncData)])):        
-        tmpFOI += IncData[i]*Wratio[i+1]
-    return tmpFOI;
-        
-def GMpara2NBpara(tempFOI,Rngt,dispK):
-    # to change the parameters of gamma distribution to those of the NB distribution
-    return [tempFOI*dispK,Rngt/(Rngt+dispK)]
-
-def Eqtn_K(k,IncData,FOIdata,R_est):
-    return np.sum(FOIdata*(special.psi(IncData + 1/k*FOIdata)-special.psi(1/k*FOIdata)- np.log(1+k*R_est)));
-
 
 def tvInfer(IncData_impt,FOI_impt):
     
@@ -126,7 +110,7 @@ arNum = 5
 Re_5areas = []
 Areas = ['Cobb','DeKalb','Fulton','Gwinnett','Dougherty']
 
-dataPath = '/Users/macbjmu/Documents/research/NewIdeas/dynamic_Rt/dynaRt_code/data/'
+dataPath = '/Users/data/'
 dataFile = 'GA_data.csv'
 
 for ar_i in range(arNum):
