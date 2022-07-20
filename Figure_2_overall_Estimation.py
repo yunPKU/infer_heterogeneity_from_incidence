@@ -11,7 +11,7 @@ from scipy.optimize import fsolve
 from scipy import special
 import scipy.integrate as integrate
 from scipy.stats import gamma
-import pymc3 as pm
+import pymc as pm
 import arviz as az
 import csv
 import pandas as pd
@@ -55,7 +55,7 @@ def Inci2Epi_Para(outbreakData):
     
     
     '''
-    2. Simulate the incidence data IncData
+    1. preparing for the analysis
     '''    
     SimDays = len(IncData)
     tempFOI = signal.convolve(np.concatenate((np.zeros(len(Wratios)-1),IncData)),Wratios, mode='valid')     
@@ -68,7 +68,7 @@ def Inci2Epi_Para(outbreakData):
     
     
     # '''
-    # 4. MCMC estimation
+    # 2. performing MCMC estimation
     # '''
     basic_model = pm.Model()
     with basic_model:
@@ -78,7 +78,7 @@ def Inci2Epi_Para(outbreakData):
         nb_p = k_para/(Rt_para+k_para);    
         Y_obs = pm.NegativeBinomial("Y_obs", n=nb_r, p=nb_p, observed=IncData_impt)
         trace = pm.sample(10000, return_inferencedata=False,cores=1,chains = 1);
-    
+    map_estimate = pm.find_MAP(model=basic_model)
     posterior_samples["k_new"] = pd.DataFrame(trace['k_disp'].squeeze().T)
     posterior_samples["R_new"] = pd.DataFrame(trace['Rt'].squeeze().T)
     
@@ -97,7 +97,7 @@ def Inci2Epi_Para(outbreakData):
         
         Y_obs = pm.NegativeBinomial("Y_obs_pop", n=nb_r, p=nb_p, observed=IncData_impt) 
         trace_pop = pm.sample(10000, return_inferencedata=False,cores=1,chains = 1);    
-    
+    map_estimate_pop = pm.find_MAP(model=basic_model_pop)
     posterior_samples['k_pop'] = pd.DataFrame(trace_pop['k_disp_pop'].squeeze().T)
     posterior_samples['R_pop'] = pd.DataFrame(trace_pop['Rt_pop'].squeeze().T)
     
@@ -107,12 +107,13 @@ def Inci2Epi_Para(outbreakData):
     R_hpd_pop = az.hdi(trace_pop["Rt_pop"],hdi_prob = 0.95)
     k_median_pop = np.median(trace_pop["k_disp_pop"])
     R_median_pop = np.median(trace_pop["Rt_pop"])
-    return [posterior_samples,k_median_pop,k_hpd_pop,R_median_pop,R_hpd_pop,k_median,k_hpd,R_median,R_hpd];
+    return [posterior_samples,map_estimate_pop['k_disp_pop'],k_hpd_pop,map_estimate_pop['Rt_pop'],R_hpd_pop,
+            map_estimate['k_disp'],k_hpd,map_estimate['Rt'],R_hpd];
 
 '''
 
 '''
-IncPath = '/Users/macbjmu/Documents/research/NewIdeas/dynamic_Rt/dynaRt_code/data/'
+IncPath = '/Users/data/'
 
 Incfile = 'mers-sk.csv'
 outbreakName = 'Mers-South Korea'
@@ -174,17 +175,15 @@ axes[-1].set_xlabel("k")
 
 
 # R plot
-posterior_obk_all = pd.concat((posterior_obk[0],posterior_obk_HK[0],posterior_obk_TJ[0]))
-plt.style.use('ggplot') # pretty matplotlib plots
-# plt.rc('font', size=20)
-fig,ax = plt.subplots(figsize=(16,9),dpi = 500)
-fig, axes = joypy.joyplot(posterior_obk_all, ax = ax,by="outbreak", overlap = 0,column=["R_pop",'R_new'],alpha = 0.5,ylim = 'own',x_range = [0.3,2],grid = True,ylabels = False)
-R_CIs = [R_CI_CoV_HK,R_CI_CoV_TJ,R_CI_Mers]
-ar_pos = [-0.3,-0.1,-0.1]
-for i in range(len(axes)-1):
-    tempCI = R_CIs[i]
-    axes[i].hlines(ar_pos[i] , tempCI[0],tempCI[1],color = 'k',lw = 5)   
-    axes[i].plot((tempCI[0]+tempCI[1])/2,ar_pos[i],'r+',markersize=16)
-axes[-1].set_xlabel("R")
-
-
+# posterior_obk_all = pd.concat((posterior_obk[0],posterior_obk_HK[0],posterior_obk_TJ[0]))
+# plt.style.use('ggplot') # pretty matplotlib plots
+# # plt.rc('font', size=20)
+# fig,ax = plt.subplots(figsize=(16,9),dpi = 500)
+# fig, axes = joypy.joyplot(posterior_obk_all, ax = ax,by="outbreak", overlap = 0,column=["R_pop",'R_new'],alpha = 0.5,ylim = 'own',x_range = [0.3,2],grid = True,ylabels = False)
+# R_CIs = [R_CI_CoV_HK,R_CI_CoV_TJ,R_CI_Mers]
+# ar_pos = [-0.3,-0.1,-0.1]
+# for i in range(len(axes)-1):
+#     tempCI = R_CIs[i]
+#     axes[i].hlines(ar_pos[i] , tempCI[0],tempCI[1],color = 'k',lw = 5)   
+#     axes[i].plot((tempCI[0]+tempCI[1])/2,ar_pos[i],'r+',markersize=16)
+# axes[-1].set_xlabel("R")
