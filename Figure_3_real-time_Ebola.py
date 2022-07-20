@@ -8,7 +8,6 @@ Created on Tue Jul  6 16:04:04 2021
 """
 import numpy as np
 from scipy.stats import nbinom
-from scipy.optimize import fsolve
 from scipy import special
 import scipy.integrate as integrate
 from scipy.stats import gamma
