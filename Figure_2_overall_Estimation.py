@@ -11,7 +11,7 @@ from scipy.optimize import fsolve
 from scipy import special
 import scipy.integrate as integrate
 from scipy.stats import gamma
-import pymc as pm
+import pymc3 as pm
 import arviz as az
 import csv
 import pandas as pd
