@@ -13,3 +13,6 @@ sd_GT	| the standard deviation of generation time
 MaxInfctPrd | the maximum length of generation time 
 IncData | a numpy array contains the incidence time series
 Output | return the MAP and the HPD of the dispersion parameter (k) and the reproduction number (R)
+
+# New codes after correction
+The new codes after correcting the bug have been stored in the folder of "codes_after_correction"
