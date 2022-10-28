@@ -1,4 +1,4 @@
-These files are the codes before the correction of the bug.
+These files are the codes after the correction of the bug.
 
 # Explanation about the bug in the python code
 
