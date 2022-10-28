@@ -8,5 +8,7 @@ The input parameters include the mean and standard deviation of the serial inter
 
 ## What is the bug
 The wrong code was: “shape_para = mean_GT/sd_GT**2”
-The corrected code was: “shape_para = (mean_GT/sd_GT)**2 ” 
+
+The corrected code was: “shape_para = (mean_GT/sd_GT)**2”
+
 (Please see https://en.wikipedia.org/wiki/Gamma_distribution for more details of the transformation)
