@@ -28,7 +28,7 @@ def gamma2discrete(mean_GT,sd_GT,MaxInfctPrd):
     w_s, the infectivity profile
 
     '''
-    shape_para = sd_GT/mean_GT**2;
+    shape_para = (sd_GT/mean_GT)**2;
     rate_para  = shape_para/mean_GT
     
     wRatio = np.zeros(MaxInfctPrd+1)
